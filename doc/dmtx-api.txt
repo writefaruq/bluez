@@ -1,0 +1,85 @@
+BlueZ D-Bus Dmtx API description
+***********************************
+
+Part of Bluez-GSoC 2009 Program
+Student: M Omar Faruque Sarker <writefaruq@gmail.com>
+Mentor: Claudio Takahasi <claudio.takahasi@gmail.com>
+
+
+Device hierarchy
+=================
+
+Service		org.bluez
+Interface	org.bluez.Dmtx
+Object path	[variable prefix]/{hci0,hci1,...}/dev_XX_XX_XX_XX_XX_XX
+
+Methods		object CreateSymbolicDevice(string xmldata)
+
+			Creates a new object path for a sybolic remote device from xml
+			data and without actually connecting to the remote device and retrieving
+			any SDP record.
+
+			If the object for the remote device already exists
+			this method will fail.
+
+			Possible errors: org.bluez.Error.InvalidArguments
+					 org.bluez.Error.Failed
+
+            object RemoveSymbolicDevice(string bdaddr)
+
+			This removes the sybolic remote device object at the given
+			path if the device is not connected yet.
+
+			Possible errors: org.bluez.Error.InvalidArguments
+					 org.bluez.Error.Failed
+
+            void Connect()
+
+			Connect to the remote device. If remote device is not paried yet, this
+			will also initiate pairing. This makes the device a "real" rather than
+			just a symbolic one.
+
+			Possible errors: org.bluez.Error.AlreadyConnected
+					 org.bluez.Error.ConnectionAttemptFailed
+
+            void Disconnect()
+
+			Disconnect from the remote device and remove it from this from the
+			list of symbolic devices.
+
+			To abort a connection attempt in case of errors or
+			timeouts in the client it is fine to call this method.
+
+			Possible errors: org.bluez.Error.Failed
+
+		dict GetProperties()
+
+			Returns all properties for the interface. See the
+			properties section for available properties.
+
+			Possible Errors: org.bluez.Error.InvalidArguments
+
+
+
+Signals		SymbolicDeviceCreated(object device)
+
+			Parameter is object path of created device.
+
+
+            SymbolicDeviceRemoved(object device)
+
+			Parameter is object path of removed device.
+
+            PropertyChanged(string name, variant value)
+
+			This signal indicates a changed value of the given
+			property.
+
+
+Properties boolean Connected [readonly]
+
+			Indicates if the remote device is currently connected.
+			From this point, the device should be treated as "real" rather
+			than just a symbolic one.
+			A PropertyChanged signal indicate changes to this
+			status.

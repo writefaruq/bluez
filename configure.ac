@@ -63,5 +63,6 @@ AC_OUTPUT([
 	test/Makefile
 	doc/Makefile
 	doc/version.xml
+	dmtx/Makefile
 	bluez.pc
 ])
