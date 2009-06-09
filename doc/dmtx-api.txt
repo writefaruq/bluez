@@ -13,11 +13,11 @@ Service		org.bluez
 Interface	org.bluez.Dmtx
 Object path	[variable prefix]/{hci0,hci1,...}/dev_XX_XX_XX_XX_XX_XX
 
-Methods		object CreateSymbolicDevice(string xmldata)
+Methods		unit32 CreateOOBDevice(string xml_oob_data)
 
-			Creates a new object path for a sybolic remote device from xml
-			data and without actually connecting to the remote device and retrieving
-			any SDP record.
+			Creates a new object path for a out of band (OOB) remote device from xml
+			data (bdaddr, hash c and randomizer r) without actually connecting to the remote device and retrieving
+			any SDP record. This returns a connection handle for the specified device.
 
 			If the object for the remote device already exists
 			this method will fail.
@@ -25,27 +25,29 @@ Methods		object CreateSymbolicDevice(string xmldata)
 			Possible errors: org.bluez.Error.InvalidArguments
 					 org.bluez.Error.Failed
 
-            object RemoveSymbolicDevice(string bdaddr)
+            object RemoveOOBDevice(string bdaddr)
 
-			This removes the sybolic remote device object at the given
+			This removes the OOB remote device object at the given
 			path if the device is not connected yet.
 
 			Possible errors: org.bluez.Error.InvalidArguments
 					 org.bluez.Error.Failed
 
-            void Connect()
+            void ConnectOOBDevice(unit32 connection_handle)
 
-			Connect to the remote device. If remote device is not paried yet, this
-			will also initiate pairing. This makes the device a "real" rather than
-			just a symbolic one.
+			Connect to the remote device with specified handle. If remote device is not paried yet, this
+			will also initiate pairing in OOB way. This will require the caller to play the role of a
+			proxy OBB device, if the remote device has no OOB support. Particularly for exchanges
+			I/O capabilities and performing authentication either in read/write or read-only passive mode.
+
 
 			Possible errors: org.bluez.Error.AlreadyConnected
 					 org.bluez.Error.ConnectionAttemptFailed
 
             void Disconnect()
 
-			Disconnect from the remote device and remove it from this from the
-			list of symbolic devices.
+			Disconnect from the remote device and remove it  from the
+			list of OOB devices.
 
 			To abort a connection attempt in case of errors or
 			timeouts in the client it is fine to call this method.
@@ -65,15 +67,6 @@ Signals		SymbolicDeviceCreated(object device)
 
 			Parameter is object path of created device.
 
-
-            SymbolicDeviceRemoved(object device)
-
-			Parameter is object path of removed device.
-
-            PropertyChanged(string name, variant value)
-
-			This signal indicates a changed value of the given
-			property.
 
 
 Properties boolean Connected [readonly]
