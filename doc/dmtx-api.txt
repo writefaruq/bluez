@@ -63,10 +63,10 @@ Methods		unit32 CreateOOBDevice(string xml_oob_data)
 
 
 
-Signals		SymbolicDeviceCreated(object device)
+Signals	    PropertyChanged(string name, variant value)
 
-			Parameter is object path of created device.
-
+			This signal indicates a changed value of the given
+			property.
 
 
 Properties boolean Connected [readonly]
